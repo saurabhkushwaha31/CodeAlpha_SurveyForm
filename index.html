@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Page Survey</title>
+<link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+<div id="survey-container">
+  <form id="survey-form">
+    <!-- Page 1: Introduction -->
+    <div class="survey-page" id="page-1">
+      <h2>Welcome to Our Survey!</h2>
+      <p>Thank you for participating in our survey. Your feedback is important to us.</p>
+      <p>This survey consists of multiple pages, and your progress will be saved as you go. If you need to leave and come back later, your responses will still be here.</p>
+      <button type="button" onclick="showPage(2)">Next</button>
+    </div>
+
+    <!-- Page 2: Demographic Information -->
+    <div class="survey-page" id="page-2" style="display: none;">
+      <h2>Demographic Information</h2>
+      <label>Age: <input type="text" name="age"></label><br>
+      <label>Gender: 
+        <select name="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="non-binary">Non-binary</option>
+          <option value="prefer-not-to-say">Prefer not to say</option>
+        </select>
+      </label><br>
+      <label>Location: <input type="text" name="location"></label><br>
+      <button type="button" onclick="showPage(3)">Next</button>
+    </div>
+
+    <!-- Page 3: Product Satisfaction -->
+    <div class="survey-page" id="page-3" style="display: none;">
+      <h2>Product Satisfaction</h2>
+      <label>How satisfied are you with our product?</label><br>
+      <label><input type="radio" name="satisfaction" value="very-satisfied"> Very satisfied</label><br>
+      <label><input type="radio" name="satisfaction" value="satisfied"> Satisfied</label><br>
+      <label><input type="radio" name="satisfaction" value="neutral"> Neutral</label><br>
+      <label><input type="radio" name="satisfaction" value="unsatisfied"> Unsatisfied</label><br>
+      <label><input type="radio" name="satisfaction" value="very-unsatisfied"> Very unsatisfied</label><br>
+      <label>What do you like most about the product? <textarea name="liked-features"></textarea></label><br>
+      <label>What improvements would you suggest? <textarea name="suggestions"></textarea></label><br>
+      <button type="button" onclick="showPage(4)">Next</button>
+    </div>
+
+    <!-- Rest of the pages... -->
+
+    <!-- Submission Confirmation -->
+    <div class="survey-page" id="page-4" style="display: none;">
+      <h2>Thank you for completing our survey!</h2>
+      <p>Your responses have been recorded. If you provided your email, we will send you a confirmation along with a summary of your responses.</p>
+      <label>Email: <input type="email" name="email"></label><br>
+      <button type="button" onclick="submitSurvey()">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  let currentPage = 1;
+  let surveyData = {};
+
+  function showPage(pageNumber) {
+    document.getElementById(`page-${currentPage}`).style.display = 'none';
+    document.getElementById(`page-${pageNumber}`).style.display = 'block';
+    currentPage = pageNumber;
+  }
+
+  function submitSurvey() {
+    const email = document.querySelector('input[name="email"]').value;
+    surveyData.email = email;
+    
+    // Send surveyData to the server via AJAX or fetch API
+    // Example: You can use fetch to send the data to a server endpoint
+    fetch('/submit_survey', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(surveyData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response from the server (e.g., success message)
+      console.log('Survey data submitted:', data);
+      // You can also show a confirmation message to the user
+      alert('Survey data submitted successfully!');
+    })
+    .catch(error => {
+      console.error('Error submitting survey data:', error);
+      // Handle errors (e.g., show an error message to the user)
+      alert('An error occurred while submitting the survey data.');
+    });
+  }
+</script>
+</body>
+</html>
